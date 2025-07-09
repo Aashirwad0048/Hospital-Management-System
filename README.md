@@ -1,7 +1,10 @@
 # HMS (Hospital Management System)
 
 A full-stack hospital management system with React frontend and Node.js/Express backend.
-
+##Login
+ Its an admin point website so for the safety standards use
+ -Email - kailash@123gmail.com
+ -password-123
 ## Features
 
 - Patient Management
