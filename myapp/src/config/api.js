@@ -1,7 +1,7 @@
 // API Configuration
 const API_CONFIG = {
   // Base URL for API calls
-  BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
+  BASE_URL: 'https://hms-storing.onrender.com',
   
   // API Endpoints
   ENDPOINTS: {
