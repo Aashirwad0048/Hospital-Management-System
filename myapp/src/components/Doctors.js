@@ -27,9 +27,6 @@ const Doctors = () => {
     total: 0
   });
 
-  // API base URL - backend runs on port 5000, frontend on port 3000
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-
     useEffect(() => {
     fetchDoctors();
     fetchAttendanceSummary();
@@ -39,7 +36,7 @@ const Doctors = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`${API_BASE_URL}/doctors`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS}`);
       setDoctors(response.data);
     } catch (error) {
       console.error('Error fetching doctors:', error);
@@ -51,7 +48,7 @@ const Doctors = () => {
 
   const fetchAttendanceSummary = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS_ATTENDANCE_SUMMARY}`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS_ATTENDANCE_SUMMARY}`);
       setAttendanceSummary(response.data);
     } catch (error) {
       console.error('Error fetching attendance summary:', error);
@@ -64,7 +61,7 @@ const Doctors = () => {
     setError('');
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/doctors/add`, newDoctor);
+      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS_ADD}`, newDoctor);
                 setDoctors([...doctors, response.data]);
       setNewDoctor({ 
         name: '', 
@@ -90,7 +87,7 @@ const Doctors = () => {
     setError('');
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/doctors/update/${id}`, selectedDoctor);
+      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS_UPDATE(id)}`, selectedDoctor);
       setDoctors((prev) =>
         prev.map((doctor) =>
           doctor._id === id ? { ...response.data, _id: id } : doctor
@@ -116,7 +113,7 @@ const Doctors = () => {
     setError('');
     
     try {
-      await axios.delete(`${API_BASE_URL}/doctors/delete/${id}`);
+      await axios.delete(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS_DELETE(id)}`);
       setDoctors((prev) => prev.filter((doctor) => doctor._id !== id));
       fetchAttendanceSummary();
     } catch (error) {

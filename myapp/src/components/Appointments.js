@@ -20,9 +20,6 @@ const Appointments = () => {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  // API base URL - backend runs on port 5000, frontend on port 3000
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-
   // Configure axios defaults
   axios.defaults.timeout = 10000; // 10 seconds timeout
   axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -37,8 +34,8 @@ const Appointments = () => {
     setLoading(true);
     setError('');
     try {
-      console.log('🔍 Fetching appointments from:', `${API_BASE_URL}/appointments`);
-      const response = await axios.get(`${API_BASE_URL}/appointments`);
+      console.log('🔍 Fetching appointments from:', `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.APPOINTMENTS}`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.APPOINTMENTS}`);
       console.log('✅ Appointments fetched successfully:', response.data);
       setAppointments(response.data);
     } catch (error) {
@@ -66,7 +63,7 @@ const Appointments = () => {
 
   const fetchPatients = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/patients`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PATIENTS}`);
       setPatients(response.data);
     } catch (error) {
       console.error('Error fetching patients:', error);
@@ -75,7 +72,7 @@ const Appointments = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/doctors`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCTORS}`);
       setDoctors(response.data);
     } catch (error) {
       console.error('Error fetching doctors:', error);
@@ -89,7 +86,7 @@ const Appointments = () => {
     
     try {
       console.log('➕ Adding appointment:', newAppointment);
-      const response = await axios.post(`${API_BASE_URL}/appointments/add`, newAppointment);
+      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.APPOINTMENTS_ADD}`, newAppointment);
       console.log('✅ Appointment added successfully:', response.data);
       
         setAppointments([...appointments, response.data]);
@@ -119,7 +116,7 @@ const Appointments = () => {
     
     try {
       console.log('✏️ Updating appointment:', id, selectedAppointment);
-      const response = await axios.post(`${API_BASE_URL}/appointments/update/${id}`, selectedAppointment);
+      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.APPOINTMENTS_UPDATE(id)}`, selectedAppointment);
       console.log('✅ Appointment updated successfully:', response.data);
       
         setAppointments((prev) =>
@@ -157,7 +154,7 @@ const Appointments = () => {
     
     try {
       console.log('🗑️ Deleting appointment:', id);
-      await axios.delete(`${API_BASE_URL}/appointments/delete/${id}`);
+      await axios.delete(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.APPOINTMENTS_DELETE(id)}`);
       console.log('✅ Appointment deleted successfully');
       
       setAppointments((prev) => prev.filter((appointment) => appointment._id !== id));
@@ -217,7 +214,7 @@ const Appointments = () => {
 
   const testConnection = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/health`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/health`);
       console.log('✅ Health check successful:', response.data);
       alert('Connection successful! Server is running.');
     } catch (error) {

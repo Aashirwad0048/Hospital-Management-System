@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PatientCard from './PatientCard';
+import API_CONFIG from '../config/api';
 
 const Patients = () => {
     const [patients, setPatients] = useState([]);
@@ -12,7 +13,7 @@ const Patients = () => {
   const [showForm, setShowForm] = useState(false);
 
   // API base URL - backend runs on port 5000, frontend on port 3000
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  // const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
     useEffect(() => {
     fetchPatients();
@@ -22,7 +23,7 @@ const Patients = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`${API_BASE_URL}/patients`);
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PATIENTS}`);
       setPatients(response.data);
     } catch (error) {
       console.error('Error fetching patients:', error);
@@ -38,7 +39,7 @@ const Patients = () => {
     setError('');
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/patients/add`, newPatient);
+      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PATIENTS_ADD}`, newPatient);
                 setPatients([...patients, response.data]);
                 setNewPatient({ name: '', age: '', gender: '' });
       setShowForm(false);
@@ -56,7 +57,7 @@ const Patients = () => {
     setError('');
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/patients/update/${id}`, selectedPatient);
+      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PATIENTS_UPDATE(id)}`, selectedPatient);
       setPatients((prev) =>
         prev.map((patient) =>
           patient._id === id ? { ...response.data, _id: id } : patient
@@ -82,7 +83,7 @@ const Patients = () => {
     setError('');
     
     try {
-      await axios.delete(`${API_BASE_URL}/patients/delete/${id}`);
+      await axios.delete(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PATIENTS_DELETE(id)}`);
       setPatients((prev) => prev.filter((patient) => patient._id !== id));
     } catch (error) {
       console.error('Error deleting patient:', error);
