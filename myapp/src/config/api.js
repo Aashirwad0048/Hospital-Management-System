@@ -1,7 +1,11 @@
 // API Configuration
 const API_CONFIG = {
   // Base URL for API calls
+<<<<<<< HEAD
   BASE_URL: 'https://hms-storing.onrender.com',
+=======
+  BASE_URL: 'https://hms-storing.vercel.app/',
+>>>>>>> 5a2f9d5d76cfd000edd5f121afd7facdcbd1b87a
   
   // API Endpoints
   ENDPOINTS: {
