@@ -185,3 +185,180 @@ The frontend uses a centralized API configuration file (`src/config/api.js`) tha
 - **Backend**: Node.js, Express.js, MongoDB, Mongoose
 - **Frontend**: React.js, Axios, Tailwind CSS
 - **Development**: Nodemon, dotenv 
+
+---
+
+## 1. **Backend is only listening on localhost (127.0.0.1)**
+
+By default, many Node.js servers only listen on `localhost`, which means they are only accessible from your own computer—not from other devices on your network.
+
+**Solution:**  
+In your `server.js`, make sure your server listens on `0.0.0.0` (all network interfaces), not just `localhost` or `127.0.0.1`.
+
+**Example:**
+```js
+// BAD (only accessible from your computer)
+app.listen(5000, 'localhost', () => { ... });
+
+// GOOD (accessible from other devices on your WiFi)
+app.listen(5000, '0.0.0.0', () => { ... });
+```
+Or simply:
+```js
+app.listen(5000, () => { ... }); // This usually works too
+```
+
+---
+
+## 2. **Firewall or Windows Defender is blocking connections**
+
+Your computer's firewall may block incoming connections to your Node.js server.
+
+**Solution:**  
+- Allow Node.js through Windows Defender Firewall.
+- Open port 5000 (or whatever port your server uses) for inbound connections.
+
+---
+
+## 3. **Using the wrong IP address on your phone**
+
+You must use your computer's **local network IP address** (not `localhost` or `127.0.0.1`) in your phone's browser.
+
+**How to find your computer's IP:**
+- Open Command Prompt or PowerShell and run:
+  ```
+  ipconfig
+  ```
+- Look for the IPv4 Address (e.g., `192.168.1.42`).
+
+**On your phone, visit:**  
+```
+http://192.168.1.42:5000/
+```
+(Replace with your actual IP and port.)
+
+---
+
+## 4. **Both devices must be on the same WiFi network**
+
+Your phone and your computer must be connected to the same WiFi network for this to work.
+
+---
+
+## 5. **CORS issues**
+
+If your frontend is running on your phone and the backend is on your computer, you may need to enable CORS in your backend.
+
+**In `server.js`:**
+```js
+const cors = require('cors');
+app.use(cors());
+```
+
+---
+
+## **Checklist**
+
+- [ ] Server is listening on `0.0.0.0`
+- [ ] Firewall allows inbound connections on your server port
+- [ ] You use your computer's local IP address on your phone
+- [ ] Both devices are on the same WiFi
+- [ ] CORS is enabled on the backend
+
+---
+
+Would you like help editing your `server.js` to listen on all interfaces, or step-by-step instructions for any of the above steps? 
+
+### Here’s what you need to do:
+
+---
+
+## 1. Change the server to listen on all interfaces
+
+**Replace:**
+```js
+const HOST = process.env.HOST || 'localhost';
+```
+
+**With:**
+```js
+const HOST = process.env.HOST || '0.0.0.0';
+```
+
+This will make your backend accessible from other devices on your WiFi.
+
+---
+
+## 2. (Optional) Add a security note
+
+When you open your server to the network, anyone on your WiFi can access it. For development, this is usually fine, but be careful on public networks.
+
+---
+
+## 3. Restart your server
+
+After making this change, stop your server (Ctrl+C in the terminal) and start it again with `node server.js`.
+
+---
+
+## 4. Access from your phone
+
+- Find your computer’s local IP address (e.g., `192.168.1.42`).
+- On your phone, visit: `http://192.168.1.42:5000/` (replace with your actual IP and port).
+
+---
+
+**Would you like me to make this change to your `server.js` now?** 
+
+### Here’s a review of your `vercel.json`:
+
+```json
+{
+ "version": 2,
+ "builds": [
+  {
+   "src": "/server.js",
+   "use": "@vercel/node"
+  }
+ ],
+ "routes": [
+  {
+   "src": "/(.*)",
+   "dest": "/server.js"
+  }
+ ]
+}
+```
+
+### **Analysis**
+
+- **"builds"**:  
+  - `"src": "/server.js"`: The leading slash is not necessary and can sometimes cause issues. It should be `"src": "server.js"`.
+  - `"use": "@vercel/node"`: Correct for deploying a Node.js serverless function.
+
+- **"routes"**:  
+  - `"src": "/(.*)"`, `"dest": "/server.js"`: Again, the leading slashes are not needed. Should be `"src": "/(.*)"`, `"dest": "server.js"`.
+
+### **Recommended Correction**
+
+```json
+<code_block_to_apply_changes_from>
+{
+  "version": 2,
+  "builds": [
+    { "src": "server.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "server.js" }
+  ]
+}
+```
+
+### **Other Considerations**
+- Vercel is designed for serverless functions, not for running a persistent Express server. If your app relies on things like WebSockets or long-lived connections, it may not work as expected.
+- If you have both frontend and backend, you may want to split them into separate Vercel projects or use Vercel for frontend and another service (like Render or Railway) for backend.
+
+---
+
+**Would you like me to update your `vercel.json` to the recommended format?**  
+Or do you want advice on deploying both frontend and backend with Vercel? 
