@@ -1,11 +1,9 @@
 // API Configuration
 const API_CONFIG = {
-  // Base URL for API calls
-<<<<<<< HEAD
-  BASE_URL: 'https://hms-storing.onrender.com',
-=======
-  BASE_URL: 'https://hms-storing.vercel.app/',
->>>>>>> 5a2f9d5d76cfd000edd5f121afd7facdcbd1b87a
+  // Base URL for API calls - Using production server as fallback
+  BASE_URL: process.env.NODE_ENV === 'production' 
+    ? 'https://hms-storing.onrender.com' 
+    : 'https://hms-storing.onrender.com', // Using production server for development too
   
   // API Endpoints
   ENDPOINTS: {

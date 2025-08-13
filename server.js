@@ -40,12 +40,24 @@ const connectDB = async () => {
     } catch (error) {
         console.error('❌ MongoDB connection error:', error.message);
         console.log('💡 Please check your MongoDB connection string in .env file');
-        process.exit(1);
+        console.log('⚠️  Server will continue without database connection for testing');
+        return null;
     }
 };
 
 // Connect to MongoDB
 connectDB();
+
+// Add process error handlers
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Don't exit the process for unhandled rejections in development
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    // Don't exit the process for uncaught exceptions in development
+});
 
 // Routes
 app.use('/appointments', require('./routes/appointments'));
@@ -85,8 +97,27 @@ app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
+// Global error handlers
+process.on('uncaughtException', (error) => {
+    console.error('❌ Uncaught Exception:', error);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
+
+const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server is running on ${HOST}:${PORT}`);
     console.log(`🌐 API URL: http://${HOST}:${PORT}`);
     console.log(`🏥 Health check: http://${HOST}:${PORT}/health`);
+});
+
+server.on('error', (error) => {
+    console.error('❌ Server error:', error);
+    if (error.code === 'EADDRINUSE') {
+        console.log(`❌ Port ${PORT} is already in use. Please try a different port.`);
+        process.exit(1);
+    }
 }); 
