@@ -187,4 +187,4 @@ The frontend uses a centralized API configuration file (`src/config/api.js`) tha
 
 - **Backend**: Node.js, Express.js, MongoDB, Mongoose
 - **Frontend**: React.js, Axios, Tailwind CSS
-- **Development**: Nodemon, dotenv 
+- **Development**: Nodemon, dotenv # Hospital-Management-System
